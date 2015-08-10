@@ -22,10 +22,6 @@ public class KaliServicesFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     boolean updateStatuses = false;
 
-
-
-
-
     public KaliServicesFragment() {
         KaliServices = new String[][]{
 
@@ -127,8 +123,6 @@ public class KaliServicesFragment extends Fragment {
 
 
 // This class is the main for the services
-
-
 class SwichLoader extends BaseAdapter {
 
     private Context mContext;

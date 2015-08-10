@@ -28,6 +28,7 @@
         android:text="@string/launch_wifite"
         android:clickable="true"
         android:textColor="#ffffffff" />
+
 	<Button
         android:id="@+id/update_kali_chroot"
         android:layout_weight="1"
@@ -36,6 +37,7 @@
         android:text="@string/update_kali_chroot"
         android:clickable="true"
         android:textColor="#ffffffff" />
+
 	<Button
         android:id="@+id/turn_off_external_wifi"
         android:layout_weight="1"
@@ -43,7 +45,8 @@
         android:layout_height="wrap_content"
         android:text="@string/turn_off_external_wifi"
         android:clickable="true"
-        android:textColor="#ffffffff" />      
+        android:textColor="#ffffffff" />
+
 	<Button
         android:id="@+id/shutdown_kali"
         android:layout_weight="1"

@@ -1,6 +1,8 @@
 package com.offsec.nethunter;
 
 import android.app.ActionBar;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +24,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+
+import cyanogenmod.app.CMStatusBarManager;
+import cyanogenmod.app.CustomTile;
 
 //import android.app.Fragment;
 //import android.app.FragmentManager;
@@ -38,6 +44,14 @@ public class AppNavHomeActivity extends FragmentActivity
     public final static int MANA_FRAGMENT = 6;
     public final static int DNSMASQ_FRAGMENT = 7;
     public final static int IPTABLES_FRAGMENT = 8;
+
+    public static final int REQUEST_CODE = 0;
+    public static final int CUSTOM_TILE_LIST_ID = 2;
+    public static final int CUSTOM_TILE_GRID_ID = 3;
+    public static final String ACTION_TOGGLE_STATE =
+            "com.offsec.nethunter.ACTION_TOGGLE_STATE";
+    public static final String STATE = "state";
+    public static int CUSTOM_TILE_ID = 1337;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -80,6 +94,9 @@ public class AppNavHomeActivity extends FragmentActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        if (isCyanogenMod())
+            setupQuickSettingsTile();
     }
 
     @Override
@@ -163,13 +180,11 @@ public class AppNavHomeActivity extends FragmentActivity
     }
 
     public void onSectionAttached(int position) {
-        // restore title
         mTitle = activityNames[position];
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -185,7 +200,7 @@ public class AppNavHomeActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //Handle back button for fragments && menu
-        //FragmentManager fragmentManager = getFragmentManager();
+        //FragmentManager fragmentManage    r = getFragmentManager();
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (mNavigationDrawerFragment.isDrawerOpen()) {
             mNavigationDrawerFragment.closeDrawer();
@@ -247,6 +262,62 @@ public class AppNavHomeActivity extends FragmentActivity
         }
     }
 
+    private PendingIntent buildTermIntent(String cmd, Context ctx) {
+        Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
+        i.addCategory(Intent.CATEGORY_DEFAULT);
+        i.putExtra("jackpal.androidterm.iInitialCommand", cmd);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(ctx, 0, i, 0);
+    }
+
+    private Boolean isCyanogenMod() {
+        return cyanogenmod.os.Build.CM_VERSION.SDK_INT > 0;
+    }
+
+    private void setupQuickSettingsTile() {
+        String[] commands = {
+                "su -c bootkali",
+                "su -c 'bootkali kalimenu'",
+                "su -c 'bootkali wifite'",
+                "su -c 'bootkali wifi-disable'",
+                "su -c 'bootkali update'",
+                "su -c killkali"
+        };
+
+        String[] labels = {
+                getString(R.string.launch_kali_shell),
+                getString(R.string.launch_kali_menu),
+                getString(R.string.launch_wifite),
+                getString(R.string.turn_off_external_wifi),
+                getString(R.string.update_kali_chroot),
+                getString(R.string.kill_kali)
+        };
+
+        ArrayList<CustomTile.ExpandedListItem> expandedListItems = new ArrayList<>();
+
+        for (int i = 0; i < commands.length; i++) {
+            CustomTile.ExpandedListItem expandedListItem = new CustomTile.ExpandedListItem();
+            expandedListItem.setExpandedListItemDrawable(R.drawable.ic_action_code);
+            expandedListItem.setExpandedListItemTitle(labels[i]);
+            expandedListItem.setExpandedListItemOnClickIntent(buildTermIntent(commands[i], this));
+            expandedListItems.add(expandedListItem);
+        }
+
+        CustomTile.ListExpandedStyle listExpandedStyle = new CustomTile.ListExpandedStyle();
+        listExpandedStyle.setListItems(expandedListItems);
+
+        CustomTile mCustomTile = new CustomTile.Builder(this)
+                .setExpandedStyle(listExpandedStyle)
+                .setContentDescription("Kali Linux NetHunter")
+                .setLabel("Kali NetHunter")
+                .setIcon(R.drawable.ic_tile)
+                .setContentDescription("Kali Linux NetHunter")
+                .setOnSettingsClickIntent(new Intent(this, AppNavHomeActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                .build();
+
+        CMStatusBarManager.getInstance(this)
+                .publishTile(CUSTOM_TILE_ID, mCustomTile);
+    }
 
 }
-
