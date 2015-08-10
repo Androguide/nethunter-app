@@ -1,6 +1,9 @@
 package com.offsec.nethunter;
 
 import android.app.ActionBar;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +26,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import cyanogenmod.app.CMStatusBarManager;
+import cyanogenmod.app.CustomTile;
+
 //import android.app.Fragment;
 //import android.app.FragmentManager;
 
@@ -38,6 +44,14 @@ public class AppNavHomeActivity extends FragmentActivity
     public final static int MANA_FRAGMENT = 6;
     public final static int DNSMASQ_FRAGMENT = 7;
     public final static int IPTABLES_FRAGMENT = 8;
+
+    public static final int REQUEST_CODE = 0;
+    public static final int CUSTOM_TILE_LIST_ID = 2;
+    public static final int CUSTOM_TILE_GRID_ID = 3;
+    public static final String ACTION_TOGGLE_STATE =
+            "com.offsec.nethunter.ACTION_TOGGLE_STATE";
+    public static final String STATE = "state";
+    public static int CUSTOM_TILE_ID = 1337;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -80,6 +94,8 @@ public class AppNavHomeActivity extends FragmentActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        setupQuickSettingsTiles();
     }
 
     @Override
@@ -247,6 +263,30 @@ public class AppNavHomeActivity extends FragmentActivity
         }
     }
 
+    private void setupQuickSettingsTiles() {
+        // Define an intent that has an action of toggling a state
+        Intent intent = new Intent();
+        intent.setAction(ACTION_TOGGLE_STATE);
+        // initialize this state to off
+        intent.putExtra(AppNavHomeActivity.STATE, States.STATE_OFF);
 
+        // Retrieve a pending intent from the system to be fired when the
+        // clicks the custom tile
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Instantiate a builder object
+        CustomTile mCustomTile = new CustomTile.Builder(this)
+                .setOnClickIntent(pendingIntent)                      // set the pending intent
+                .setContentDescription("Launch Kali Shell in Terminal")
+                .setLabel("Start Kali Shell")           // display current state
+                .setIcon(R.drawable.ic_tile)
+                .build();                                             // build
+
+        //Publish our tile to the status bar panel with CUSTOM_TILE_ID defined elsewhere
+        CMStatusBarManager.getInstance(this)
+                .publishTile(CUSTOM_TILE_ID, mCustomTile);
+
+    }
 }
 
