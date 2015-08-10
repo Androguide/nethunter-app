@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="jackpal.androidterm.permission.RUN_SCRIPT" />
+    <uses-permission android:name="cyanogenmod.permission.PUBLISH_CUSTOM_TILE" />
 
     <application
         android:allowBackup="true"
@@ -155,6 +156,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".EditSourceActivity" />
         </activity>
+
+        <receiver android:name="TileReceiver" >
+            <intent-filter>
+                <action android:name="com.offsec.nethunter.ACTION_TOGGLE_STATE"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>

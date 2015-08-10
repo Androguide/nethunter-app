@@ -5,8 +5,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.ImageView;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -25,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 
 import cyanogenmod.app.CMStatusBarManager;
 import cyanogenmod.app.CustomTile;
@@ -185,7 +189,6 @@ public class AppNavHomeActivity extends FragmentActivity
 
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
@@ -201,7 +204,7 @@ public class AppNavHomeActivity extends FragmentActivity
     @Override
     public void onBackPressed() {
         //Handle back button for fragments && menu
-        //FragmentManager fragmentManager = getFragmentManager();
+        //FragmentManager fragmentManage    r = getFragmentManager();
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (mNavigationDrawerFragment.isDrawerOpen()) {
             mNavigationDrawerFragment.closeDrawer();
@@ -263,7 +266,87 @@ public class AppNavHomeActivity extends FragmentActivity
         }
     }
 
+    private PendingIntent buildTermIntent(String cmd, Context ctx) {
+        Intent i = new Intent("jackpal.androidterm.RUN_SCRIPT");
+        i.addCategory(Intent.CATEGORY_DEFAULT);
+        i.putExtra("jackpal.androidterm.iInitialCommand", cmd);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(ctx, 0, i, 0);
+    }
+
     private void setupQuickSettingsTiles() {
+        /*RemoteViews contentView = new RemoteViews(getPackageName(),
+                R.layout.tile_view);
+
+        PendingIntent pendingKaliShell = buildTermIntent("su -c bootkali", this);
+        PendingIntent pendingKaliMenu = buildTermIntent("su -c 'bootkali kalimenu'", this);
+        PendingIntent pendingWifite = buildTermIntent("su -c 'bootkali wifite'", this);
+        PendingIntent pendingTurnOffWifi = buildTermIntent("su -c 'bootkali wifi-disable'", this);
+        PendingIntent pendingUpdateChroot = buildTermIntent("su -c 'bootkali update'", this);
+        PendingIntent pendingKillKali = buildTermIntent("su -c killkali", this);
+
+        // Set the pending intent on the button in our layout
+        contentView.setOnClickPendingIntent(R.id.tile_launch_shell, pendingKaliShell);
+        contentView.setOnClickPendingIntent(R.id.tile_launch_kali_menu, pendingKaliMenu);
+        contentView.setOnClickPendingIntent(R.id.tile_launch_wifite, pendingWifite);
+        contentView.setOnClickPendingIntent(R.id.tile_turn_off_external_wifi, pendingTurnOffWifi);
+        contentView.setOnClickPendingIntent(R.id.tile_update_kali_chroot, pendingUpdateChroot);
+        contentView.setOnClickPendingIntent(R.id.tile_shutdown_kali, pendingKillKali);
+
+        // Create the new RemoteExpandedStyle
+        CustomTile.RemoteExpandedStyle remoteExpandedStyle =
+                new CustomTile.RemoteExpandedStyle();
+        remoteExpandedStyle.setRemoteViews(contentView); */
+
+        String[] commands = {
+                "su -c bootkali",
+                "su -c 'bootkali kalimenu'",
+                "su -c 'bootkali wifite'",
+                "su -c 'bootkali wifi-disable'",
+                "su -c 'bootkali update'",
+                "su -c killkali",
+        };
+
+        String[] labels = {
+                getString(R.string.launch_kali_shell),
+                getString(R.string.launch_kali_menu),
+                getString(R.string.launch_wifite),
+                getString(R.string.turn_off_external_wifi),
+                getString(R.string.update_kali_chroot),
+                getString(R.string.kill_kali)
+        };
+
+        ArrayList<CustomTile.ExpandedListItem> expandedListItems =
+                new ArrayList<CustomTile.ExpandedListItem>();
+        for (int i = 0; i < commands.length; i++) {
+            CustomTile.ExpandedListItem expandedListItem = new CustomTile.ExpandedListItem();
+            expandedListItem.setExpandedListItemDrawable(R.drawable.ic_code_white_48dp);
+            expandedListItem.setExpandedListItemTitle(labels[i]);
+            expandedListItem.setExpandedListItemOnClickIntent(buildTermIntent(commands[i], this));
+            expandedListItems.add(expandedListItem);
+        }
+
+        CustomTile.ListExpandedStyle listExpandedStyle = new CustomTile.ListExpandedStyle();
+        listExpandedStyle.setListItems(expandedListItems);
+
+        // Instantiate a builder object
+        CustomTile mCustomTile = new CustomTile.Builder(this)
+                .shouldCollapsePanel(false)
+                .setExpandedStyle(listExpandedStyle)
+                .setContentDescription("Kali Linux NetHunter")
+                .setLabel("Kali NetHunter")
+                .setIcon(R.drawable.ic_tile)
+                .setContentDescription("Kali Linux NetHunter")
+                .setOnSettingsClickIntent(new Intent(this, AppNavHomeActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                .build();
+
+        //Publish our tile to the status bar panel with CUSTOM_TILE_ID defined elsewhere
+        CMStatusBarManager.getInstance(this)
+                .publishTile("Kali Linux NetHunter", CUSTOM_TILE_ID, mCustomTile);
+    }
+
+    public void setupTermQuickSettingTile() {
         // Define an intent that has an action of toggling a state
         Intent intent = new Intent();
         intent.setAction(ACTION_TOGGLE_STATE);
@@ -276,17 +359,19 @@ public class AppNavHomeActivity extends FragmentActivity
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Instantiate a builder object
-        CustomTile mCustomTile = new CustomTile.Builder(this)
-                .setOnClickIntent(pendingIntent)                      // set the pending intent
+        CustomTile mCustomTileTerm = new CustomTile.Builder(this)
+                .setOnSettingsClickIntent(new Intent(this, AppNavHomeActivity.class)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                .setOnClickIntent(pendingIntent)
                 .setContentDescription("Launch Kali Shell in Terminal")
-                .setLabel("Start Kali Shell")           // display current state
-                .setIcon(R.drawable.ic_tile)
+                .setLabel("Start Kali Shell")
+                .setIcon(R.drawable.ic_tile_term)
+                .setContentDescription("Description of content for expanded style")
                 .build();                                             // build
 
         //Publish our tile to the status bar panel with CUSTOM_TILE_ID defined elsewhere
         CMStatusBarManager.getInstance(this)
-                .publishTile(CUSTOM_TILE_ID, mCustomTile);
-
+                .publishTile(1339, mCustomTileTerm);
     }
 }
 
