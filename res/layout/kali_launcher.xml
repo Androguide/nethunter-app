@@ -31,6 +31,7 @@
         android:clickable="true"
         android:textColor="#ffffffff"
         android:theme="@style/ButtonTheme" />
+
 	<Button
         android:id="@+id/update_kali_chroot"
         android:layout_weight="1"
@@ -39,7 +40,8 @@
         android:text="@string/update_kali_chroot"
         android:clickable="true"
         android:textColor="#ffffffff"
-        android:theme="@style/ButtonTheme" />
+        android:theme="@style/Button" />
+
 	<Button
         android:id="@+id/turn_off_external_wifi"
         android:layout_weight="1"
@@ -49,6 +51,7 @@
         android:clickable="true"
         android:textColor="#ffffffff"
         android:theme="@style/ButtonTheme" />
+
 	<Button
         android:id="@+id/shutdown_kali"
         android:layout_weight="1"

@@ -316,6 +316,7 @@ public class AppNavHomeActivity extends FragmentActivity
                 getString(R.string.kill_kali)
         };
 
+
         ArrayList<CustomTile.ExpandedListItem> expandedListItems =
                 new ArrayList<CustomTile.ExpandedListItem>();
         for (int i = 0; i < commands.length; i++) {
@@ -329,9 +330,9 @@ public class AppNavHomeActivity extends FragmentActivity
         CustomTile.ListExpandedStyle listExpandedStyle = new CustomTile.ListExpandedStyle();
         listExpandedStyle.setListItems(expandedListItems);
 
+
         // Instantiate a builder object
         CustomTile mCustomTile = new CustomTile.Builder(this)
-                .shouldCollapsePanel(false)
                 .setExpandedStyle(listExpandedStyle)
                 .setContentDescription("Kali Linux NetHunter")
                 .setLabel("Kali NetHunter")
@@ -343,7 +344,7 @@ public class AppNavHomeActivity extends FragmentActivity
 
         //Publish our tile to the status bar panel with CUSTOM_TILE_ID defined elsewhere
         CMStatusBarManager.getInstance(this)
-                .publishTile("Kali Linux NetHunter", CUSTOM_TILE_ID, mCustomTile);
+                .publishTile(CUSTOM_TILE_ID, mCustomTile);
     }
 
     public void setupTermQuickSettingTile() {
@@ -374,4 +375,3 @@ public class AppNavHomeActivity extends FragmentActivity
                 .publishTile(1339, mCustomTileTerm);
     }
 }
-
