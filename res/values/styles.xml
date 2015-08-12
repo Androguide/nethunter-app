@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material">
-        <!-- Customize your theme here. -->
-    </style>
 
-    <style name="Button">
-        <item name="android:textColor">@color/clearTitle</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:minWidth">200dp</item>
-        <item name="android:minHeight">36dp</item>
-        <item name="android:layout_margin">3dp</item>
-        <item name="android:elevation">1dp</item>
-        <item name="android:translationZ">1dp</item>
-        <item name="android:background">@drawable/primary_round</item>
+    <style name="AppTheme" parent="android:Theme.Holo">
+        <!-- Customize your theme here. -->
     </style>
 </resources>

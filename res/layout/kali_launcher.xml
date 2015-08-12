@@ -10,8 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/launch_kali_shell"
-        android:textColor="#ffffffff"
-        android:theme="@style/ButtonTheme" />
+        android:textColor="#ffffffff" />
 
     <Button
         android:id="@+id/button_start_kalimenu"
@@ -19,8 +18,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/launch_kali_menu"
-        android:textColor="#ffffffff"
-        android:theme="@style/ButtonTheme" />
+        android:textColor="#ffffffff" />
 
     <Button
         android:id="@+id/button_launch_wifite"
@@ -29,8 +27,7 @@
         android:layout_height="wrap_content"
         android:text="@string/launch_wifite"
         android:clickable="true"
-        android:textColor="#ffffffff"
-        android:theme="@style/ButtonTheme" />
+        android:textColor="#ffffffff" />
 
 	<Button
         android:id="@+id/update_kali_chroot"
@@ -39,8 +36,7 @@
         android:layout_height="wrap_content"
         android:text="@string/update_kali_chroot"
         android:clickable="true"
-        android:textColor="#ffffffff"
-        android:theme="@style/Button" />
+        android:textColor="#ffffffff" />
 
 	<Button
         android:id="@+id/turn_off_external_wifi"
@@ -49,8 +45,7 @@
         android:layout_height="wrap_content"
         android:text="@string/turn_off_external_wifi"
         android:clickable="true"
-        android:textColor="#ffffffff"
-        android:theme="@style/ButtonTheme" />
+        android:textColor="#ffffffff" />
 
 	<Button
         android:id="@+id/shutdown_kali"
@@ -59,6 +54,5 @@
         android:layout_height="wrap_content"
         android:text="@string/shutdown_kali"
         android:clickable="true"
-        android:textColor="#ffffffff"
-        android:theme="@style/ButtonTheme" />
+        android:textColor="#ffffffff" />
 </LinearLayout>
