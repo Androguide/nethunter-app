@@ -95,7 +95,8 @@ public class AppNavHomeActivity extends FragmentActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        setupQuickSettingsTile();
+        if (isCyanogenMod())
+            setupQuickSettingsTile();
     }
 
     @Override
@@ -269,6 +270,10 @@ public class AppNavHomeActivity extends FragmentActivity
         return PendingIntent.getActivity(ctx, 0, i, 0);
     }
 
+    private Boolean isCyanogenMod() {
+        return cyanogenmod.os.Build.CM_VERSION.SDK_INT > 0;
+    }
+
     private void setupQuickSettingsTile() {
         String[] commands = {
                 "su -c bootkali",
@@ -314,4 +319,5 @@ public class AppNavHomeActivity extends FragmentActivity
         CMStatusBarManager.getInstance(this)
                 .publishTile(CUSTOM_TILE_ID, mCustomTile);
     }
+
 }
